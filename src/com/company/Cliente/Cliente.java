@@ -1,6 +1,7 @@
 package com.company.Cliente;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -12,7 +13,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Cliente extends JFrame {
+public class Cliente extends JFrame implements Runnable {
 
     private JTextField textImput;
     private JButton sendButton;
@@ -20,8 +21,10 @@ public class Cliente extends JFrame {
     private JButton seleccionarButton;
     private JTextArea text2;
     private JPanel mainPanel;
+    //
     private Socket s;
-
+    private DataOutputStream dout;
+    private DataInputStream din;
 
     public Cliente(Socket s) {
         //
@@ -30,22 +33,57 @@ public class Cliente extends JFrame {
         this.add(mainPanel);
         this.setSize(400, 400);
         // SOCKET para comunicacion
+        try {
+            din = new DataInputStream(s.getInputStream());
+            dout = new DataOutputStream(s.getOutputStream());
+            this.run();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         this.s = s;
-
-
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    if (!textImput.getText().equals(".bye")) {
+                        dout.writeUTF(textImput.getText());
+                    } else {
+                        close();
+                    }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
+
+    }
+
+    public void close() {
+        try {
+            din.close();
+            dout.close();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //LEER DEL SERRVIDOR Y ESCRIBIR EN PANTALLA
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                String msg = din.readUTF();
+                text1.append(msg + "\n");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        }
     }
 
 
-    public static void main(String[] args) {
-
-
-    }
 }
 

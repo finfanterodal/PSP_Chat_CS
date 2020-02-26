@@ -116,20 +116,28 @@ public class Servidor extends JFrame {
                         }
                     }
                     String comingText = din.readUTF();
-                    text1.append(nombre + ": " + comingText + "\n");
-                    //Enviamos los datos que llegan al resto datos al resto
-                    sendToAll(comingText);
+                    if (!comingText.equals(".bye")) {
+                        text1.append(nombre + ": " + comingText + "\n");
+                        //Enviamos los datos que llegan al resto datos al resto
+                        sendToAll(comingText);
+                    } else {
+                        comingText = nombre + ": Se a desconectado." + "\n";
+                        sendToAll(comingText);
+                        aux = true;
+                    }
                 }
-                removeCliente(nombre);
-                din.close();
-                dout.close();
-                socket.close();
-
-
+                closeConnection();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
+        }
+
+        private void closeConnection() throws IOException {
+            removeCliente(nombre);
+            din.close();
+            dout.close();
+            socket.close();
         }
 
         public void sendToClient(String msg) {
