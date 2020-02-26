@@ -151,20 +151,16 @@ public class Servidor extends JFrame {
             }
         }
 
-        public void sendToClient(String msg) {
-            try {
-                dout = new DataOutputStream(socket.getOutputStream());
-                dout.writeUTF(nombre + ": " + msg);
-                dout.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
 
         public void sendToAll(String msg) {
             for (int i = 0; i < clientes.size(); i++) {
-                sendToClient(msg);
+                try {
+                    DataOutputStream dou = new DataOutputStream(clientes.get(i).socket.getOutputStream());
+                    dou.writeUTF(nombre + ": " + msg);
+                    dou.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -182,6 +178,3 @@ public class Servidor extends JFrame {
         Servidor servidor = new Servidor();
     }
 }
-
-
-
