@@ -21,9 +21,9 @@ public class RegistroCliente extends JFrame {
     public RegistroCliente() {
         //
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setVisible(true);
         this.add(mainPanel);
         this.setSize(600, 400);
+        this.setVisible(true);
 
         //
         connectButton.addActionListener(new ActionListener() {
@@ -38,7 +38,7 @@ public class RegistroCliente extends JFrame {
                     dout.writeUTF(nickName);
                     String validacion = new DataInputStream(s.getInputStream()).readUTF();
                     if (validacion.equals("registrado")) {
-                        JOptionPane.showMessageDialog(null, "Ya estás registrado.");
+                        JOptionPane.showMessageDialog(null, "Ya está registrado.");
                     } else {
                         setVisible(false);
                         Cliente cliente = new Cliente(s);

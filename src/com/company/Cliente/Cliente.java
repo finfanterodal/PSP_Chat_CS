@@ -22,6 +22,7 @@ public class Cliente extends JFrame implements Runnable {
     private JTextArea text2;
     private JPanel mainPanel;
     //
+    private boolean aux = false;
     private Socket s;
     private DataOutputStream dout;
     private DataInputStream din;
@@ -29,9 +30,9 @@ public class Cliente extends JFrame implements Runnable {
     public Cliente(Socket s) {
         //
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setVisible(true);
         this.add(mainPanel);
-        this.setSize(400, 400);
+        this.setSize(400, 800);
+        this.setVisible(true);
         // SOCKET para comunicacion
         try {
             din = new DataInputStream(s.getInputStream());
@@ -48,6 +49,7 @@ public class Cliente extends JFrame implements Runnable {
                     if (!textImput.getText().equals(".bye")) {
                         dout.writeUTF(textImput.getText());
                     } else {
+                        aux = true;
                         close();
                     }
 
@@ -73,7 +75,7 @@ public class Cliente extends JFrame implements Runnable {
     //LEER DEL SERRVIDOR Y ESCRIBIR EN PANTALLA
     @Override
     public void run() {
-        while (true) {
+        while (!aux) {
             try {
                 String msg = din.readUTF();
                 text1.append(msg + "\n");

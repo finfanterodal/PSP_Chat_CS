@@ -19,7 +19,6 @@ public class Servidor extends JFrame {
     private JLabel statusText;
     //
     ServerSocket serverSocket;
-    Socket clientSockcet;
     static ArrayList<ServidorHandle> clientes = new ArrayList<ServidorHandle>();
 
 
@@ -33,55 +32,58 @@ public class Servidor extends JFrame {
 
         try {
             serverSocket = new ServerSocket();
-            InetSocketAddress addr = new InetSocketAddress("192.168.0.10", 5555);
+            InetSocketAddress addr = new InetSocketAddress("192.168.0.15", 5555);
             serverSocket.bind(addr);
             System.out.println("Servidor en iniciado:" + serverSocket);
             statusText.setText("Conected");
             statusText.setForeground(Color.GREEN);
-            new ServidorController().run();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-    }
-
-
-    //CONTROLA LA ACEPTACION DE NUEVOS CLIENTES
-    class ServidorController implements Runnable {
-
-
-        @Override
-        public void run() {
-            while (true) {
-                try {
-                    if (clientes.size() == 0) {
-                        text1.append("No hay clientes conectados todavía." + "\n");
-                    }
-                    Socket socket = serverSocket.accept();
-                    String i = new DataInputStream((socket.getInputStream())).readUTF();
-
-
-                    for (int j = 0; j < clientes.size(); j++) {
-
-                        if (clientes.get(j).nombre.equals("i")) {
-                            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                            dout.writeUTF("registrado");
-                        } else {
-                            text1.append("Nuevo cliente conectado: " + i + "\n");
-                            text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
-                            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                            dout.writeUTF("");
-                            ServidorHandle cliente = new ServidorHandle(i, socket);
-                            clientes.add(cliente);
-                        }
-
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+        while (true) {
+            try {
+                if (clientes.size() == 0) {
+                    text1.append("No hay clientes conectados todavía." + "\n");
                 }
+                Socket socket = serverSocket.accept();
+                String i = new DataInputStream((socket.getInputStream())).readUTF();
+                if (!(clientes.size() == 0)) {
+                    boolean aux = false;
+                    for (int j = 0; j < clientes.size(); j++) {
+                        if (clientes.get(j).nombre.equals(i)) {
+                            aux = true;
+                            break;
+                        } else {
+                            aux = false;
+                        }
+                    }
+                    if (aux) {
+                        DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+                        dout.writeUTF("registrado");
+                    } else {
+                        text1.append("Nuevo cliente conectado: " + i + "\n");
+                        DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+                        dout.writeUTF("");
+                        ServidorHandle cliente = new ServidorHandle(i, socket);
+                        clientes.add(cliente);
+                        text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
+                    }
+                } else {
+                    text1.append("Nuevo cliente conectado: " + i + "\n");
+                    DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+                    dout.writeUTF("");
+                    ServidorHandle cliente = new ServidorHandle(i, socket);
+                    clientes.add(cliente);
+                    text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
+
     }
 
 
@@ -168,10 +170,9 @@ public class Servidor extends JFrame {
     }
 
     public static void main(String[] args) {
-        Servidor servido = new Servidor();
+        Servidor servidor = new Servidor();
     }
 }
-
 
 
 
