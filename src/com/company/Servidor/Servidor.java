@@ -69,6 +69,7 @@ public class Servidor extends JFrame {
                         ServidorHandle cliente = new ServidorHandle(i, socket);
                         clientes.add(cliente);
                         text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
+                        cliente.start();
                     }
                 } else {
                     text1.append("Nuevo cliente conectado: " + i + "\n");
@@ -77,6 +78,7 @@ public class Servidor extends JFrame {
                     ServidorHandle cliente = new ServidorHandle(i, socket);
                     clientes.add(cliente);
                     text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
+                    cliente.start();
                 }
 
             } catch (Exception ex) {
@@ -88,7 +90,7 @@ public class Servidor extends JFrame {
 
 
     //LOGICA DE CONTROL DE CADA UNO DE LOS CLIENTES QUE LLEGAN
-    class ServidorHandle implements Runnable {
+    class ServidorHandle extends Thread {
         //
         private Socket socket;
         private String nombre;
@@ -103,7 +105,7 @@ public class Servidor extends JFrame {
 
 
         //RUN DEL NUEVO CLIENTE QUE HARA SUS MOVIDAS
-        @Override
+
         public void run() {
 
             try {
@@ -119,27 +121,34 @@ public class Servidor extends JFrame {
                     }
                     String comingText = din.readUTF();
                     if (!comingText.equals(".bye")) {
+                        System.out.printf(comingText);
                         text1.append(nombre + ": " + comingText + "\n");
                         //Enviamos los datos que llegan al resto datos al resto
                         sendToAll(comingText);
                     } else {
-                        comingText = nombre + ": Se a desconectado." + "\n";
-                        sendToAll(comingText);
                         aux = true;
                     }
                 }
                 closeConnection();
             } catch (IOException e) {
                 e.printStackTrace();
+                closeConnection();
             }
 
         }
 
-        private void closeConnection() throws IOException {
-            removeCliente(nombre);
-            din.close();
-            dout.close();
-            socket.close();
+        private void closeConnection() {
+            try {
+                String comingText = nombre + ": se ha desconectado." + "\n";
+                text1.append(comingText);
+                sendToAll(comingText);
+                removeCliente(nombre);
+                din.close();
+                dout.close();
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
 
         public void sendToClient(String msg) {

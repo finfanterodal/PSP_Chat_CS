@@ -1,47 +1,46 @@
 package com.company.Cliente;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Scanner;
 
-public class Cliente extends JFrame implements Runnable {
+
+public class Cliente extends JFrame {
 
     private JTextField textImput;
     private JButton sendButton;
     private JTextArea text1;
     private JButton seleccionarButton;
     private JTextArea text2;
-    private JPanel mainPanel;
+    private JPanel mainPanel1;
     //
     private boolean aux = false;
-    private Socket s;
     private DataOutputStream dout;
     private DataInputStream din;
+    private Socket clienteSocket;
+    ;
+
 
     public Cliente(Socket s) {
         //
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.add(mainPanel);
-        this.setSize(400, 800);
+        this.add(mainPanel1);
+        this.setSize(400, 400);
         this.setVisible(true);
         // SOCKET para comunicacion
+        this.clienteSocket = s;
+
         try {
-            din = new DataInputStream(s.getInputStream());
-            dout = new DataOutputStream(s.getOutputStream());
-            this.run();
+            din = new DataInputStream(clienteSocket.getInputStream());
+            dout = new DataOutputStream(clienteSocket.getOutputStream());
+            new ClienteReader().start();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        this.s = s;
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -49,6 +48,7 @@ public class Cliente extends JFrame implements Runnable {
                     if (!textImput.getText().equals(".bye")) {
                         dout.writeUTF(textImput.getText());
                     } else {
+                        dout.writeUTF(textImput.getText());
                         aux = true;
                         close();
                     }
@@ -66,22 +66,26 @@ public class Cliente extends JFrame implements Runnable {
         try {
             din.close();
             dout.close();
-            s.close();
+            clienteSocket.close();
+            System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //LEER DEL SERRVIDOR Y ESCRIBIR EN PANTALLA
-    @Override
-    public void run() {
-        while (!aux) {
-            try {
-                String msg = din.readUTF();
-                text1.append(msg + "\n");
-            } catch (Exception ex) {
-                ex.printStackTrace();
+    class ClienteReader extends Thread {
+        //LEER DEL SERRVIDOR Y ESCRIBIR EN PANTALLA
+        public void run() {
+            while (!aux) {
+                try {
+                    String msg = din.readUTF();
+                    text1.append(msg + "\n");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
             }
+
 
         }
     }

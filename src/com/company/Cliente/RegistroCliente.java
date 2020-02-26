@@ -16,6 +16,9 @@ public class RegistroCliente extends JFrame {
     private JTextField textPort;
     private JPanel mainPanel;
     //
+    private Socket s;
+    private DataOutputStream dout;
+
 
     //
     public RegistroCliente() {
@@ -31,20 +34,20 @@ public class RegistroCliente extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     String nickName = textNickname.getText();
-                    Socket s = new Socket();
+                    s = new Socket();
                     InetSocketAddress addr = new InetSocketAddress(textIP.getText(), Integer.parseInt(textPort.getText()));
                     s.connect(addr);
-                    DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+                    dout = new DataOutputStream(s.getOutputStream());
                     dout.writeUTF(nickName);
                     String validacion = new DataInputStream(s.getInputStream()).readUTF();
                     if (validacion.equals("registrado")) {
                         JOptionPane.showMessageDialog(null, "Ya está registrado.");
                     } else {
                         setVisible(false);
-                        Cliente cliente = new Cliente(s);
+                        new Cliente(s);
                     }
                 } catch (Exception ex) {
-
+                    ex.printStackTrace();
                 }
             }
         });
@@ -52,6 +55,9 @@ public class RegistroCliente extends JFrame {
 
 
     public static void main(String[] args) {
-        RegistroCliente myClient = new RegistroCliente();
+        new RegistroCliente();
+
     }
+
+
 }
