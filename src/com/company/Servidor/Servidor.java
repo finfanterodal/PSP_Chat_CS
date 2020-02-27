@@ -18,17 +18,18 @@ public class Servidor extends JFrame {
     private JPanel mainPanel;
     private JLabel statusText;
     //
-    ServerSocket serverSocket;
+    private ServerSocket serverSocket;
     static ArrayList<ServidorHandle> clientes = new ArrayList<ServidorHandle>();
 
 
     public Servidor() {
         //Configuracion panel
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setVisible(true);
+        this.setLocationRelativeTo(null);
         this.add(mainPanel);
         this.setSize(600, 400);
-        //
+        this.setVisible(true);
+
 
         try {
             serverSocket = new ServerSocket();
@@ -37,10 +38,10 @@ public class Servidor extends JFrame {
             System.out.println("Servidor en iniciado:" + serverSocket);
             statusText.setText("Conected");
             statusText.setForeground(Color.GREEN);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         while (true) {
             try {
@@ -85,6 +86,7 @@ public class Servidor extends JFrame {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+
         }
 
     }
@@ -165,7 +167,7 @@ public class Servidor extends JFrame {
                     dou.writeUTF(nombre + ": " + msg);
                     dou.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    removeCliente(clientes.get(i).nombre);
                 }
             }
         }
@@ -195,8 +197,8 @@ public class Servidor extends JFrame {
             }
         }
     }
-
     public static void main(String[] args) {
-        Servidor servidor = new Servidor();
+        new Servidor();
     }
+
 }

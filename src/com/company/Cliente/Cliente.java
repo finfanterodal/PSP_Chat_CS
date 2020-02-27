@@ -17,20 +17,22 @@ public class Cliente extends JFrame {
     private JButton seleccionarButton;
     private JTextArea text2;
     private JPanel mainPanel1;
+    private JLabel nickName;
     //
     private boolean aux = false;
     private DataOutputStream dout;
     private DataInputStream din;
     private Socket clienteSocket;
-    ;
 
 
-    public Cliente(Socket s) {
+    public Cliente(Socket s, String nickName) {
         //
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
         this.add(mainPanel1);
         this.setSize(400, 400);
         this.setVisible(true);
+        this.nickName.setText(nickName);
         text1.append("Conectado a la sala de chat." + "\n");
         // SOCKET para comunicacion
         this.clienteSocket = s;
@@ -82,8 +84,10 @@ public class Cliente extends JFrame {
                     String msg = din.readUTF();
                     text1.append(msg + "\n");
                 } catch (Exception ex) {
+                    text1.append("Servidor desconectado." + "\n");
+                    close();
                     System.out.println("Conexion Cerrada.");
-                    ;
+
                 }
 
             }
