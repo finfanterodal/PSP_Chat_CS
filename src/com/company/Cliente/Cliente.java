@@ -31,6 +31,7 @@ public class Cliente extends JFrame {
         this.add(mainPanel1);
         this.setSize(400, 400);
         this.setVisible(true);
+        text1.append("Conectado a la sala de chat." + "\n");
         // SOCKET para comunicacion
         this.clienteSocket = s;
 
@@ -81,7 +82,8 @@ public class Cliente extends JFrame {
                     String msg = din.readUTF();
                     text1.append(msg + "\n");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    System.out.println("Conexion Cerrada.");
+                    ;
                 }
 
             }

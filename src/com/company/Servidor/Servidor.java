@@ -32,7 +32,7 @@ public class Servidor extends JFrame {
 
         try {
             serverSocket = new ServerSocket();
-            InetSocketAddress addr = new InetSocketAddress("192.168.0.15", 5555);
+            InetSocketAddress addr = new InetSocketAddress("192.168.0.10", 5555);
             serverSocket.bind(addr);
             System.out.println("Servidor en iniciado:" + serverSocket);
             statusText.setText("Conected");
@@ -44,7 +44,7 @@ public class Servidor extends JFrame {
 
         while (true) {
             try {
-                if (clientes.size() == 0) {
+                if (clientes.isEmpty()) {
                     text1.append("No hay clientes conectados todavía." + "\n");
                 }
                 Socket socket = serverSocket.accept();
@@ -81,6 +81,7 @@ public class Servidor extends JFrame {
                     cliente.start();
                 }
 
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -109,6 +110,7 @@ public class Servidor extends JFrame {
         public void run() {
 
             try {
+                sendToAllNewConnection();
                 din = new DataInputStream(socket.getInputStream());
                 dout = new DataOutputStream(socket.getOutputStream());
                 while (!aux) {
@@ -130,6 +132,7 @@ public class Servidor extends JFrame {
                     }
                 }
                 closeConnection();
+
             } catch (IOException e) {
                 e.printStackTrace();
                 closeConnection();
@@ -143,6 +146,9 @@ public class Servidor extends JFrame {
                 text1.append(comingText);
                 sendToAll(comingText);
                 removeCliente(nombre);
+                if (clientes.isEmpty()) {
+                    text1.append("No hay clientes conectados todavía." + "\n");
+                }
                 din.close();
                 dout.close();
                 socket.close();
@@ -158,6 +164,22 @@ public class Servidor extends JFrame {
                     DataOutputStream dou = new DataOutputStream(clientes.get(i).socket.getOutputStream());
                     dou.writeUTF(nombre + ": " + msg);
                     dou.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void sendToAllNewConnection() {
+            for (int i = 0; i < clientes.size(); i++) {
+                try {
+                    if (clientes.get(i).nombre.equals(nombre)) {
+                        //
+                    } else {
+                        DataOutputStream dou = new DataOutputStream(clientes.get(i).socket.getOutputStream());
+                        dou.writeUTF(nombre + " acaba de conectarse a la sala de chat.");
+                        dou.flush();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
