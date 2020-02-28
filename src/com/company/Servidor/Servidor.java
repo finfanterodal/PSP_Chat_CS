@@ -33,11 +33,12 @@ public class Servidor extends JFrame {
 
         try {
             serverSocket = new ServerSocket();
-            InetSocketAddress addr = new InetSocketAddress("192.168.0.10", 5555);
+            InetSocketAddress addr = new InetSocketAddress("192.168.0.4 ", 5555);
             serverSocket.bind(addr);
             System.out.println("Servidor en iniciado:" + serverSocket);
             statusText.setText("Conected");
             statusText.setForeground(Color.GREEN);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,8 +90,44 @@ public class Servidor extends JFrame {
 
         }
 
+
     }
 
+
+    public Color selectColor() {
+        int index = 0;
+        Color color = Color.DARK_GRAY;
+        switch (index) {
+            case 0:
+                color=Color.GREEN;
+                break;
+            case 2:
+                color=Color.black;
+                break;
+            case 3:
+                color=Color.BLUE;
+                break;
+            case 4:
+                color=Color.CYAN;
+                break;
+            case 5:
+                color=Color.magenta;
+                break;
+            case 6:
+                color=Color.PINK;
+                break;
+            case 7:
+                color=Color.ORANGE;
+                break;
+            case 8:
+                color=Color.RED;
+                break;
+            case 9:
+                color=Color.GRAY;
+                break;
+        }
+        return color;
+    }
 
     //LOGICA DE CONTROL DE CADA UNO DE LOS CLIENTES QUE LLEGAN
     class ServidorHandle extends Thread {
@@ -124,9 +161,10 @@ public class Servidor extends JFrame {
                         }
                     }
                     String comingText = din.readUTF();
-                    if (!comingText.equals(".bye")) {
+                    if (!comingText.equals("/bye")) {
                         System.out.printf(comingText);
-                        text1.append(nombre + ": " + comingText + "\n");
+                        text1.append(nombre);
+                        text1.append(": "+comingText + "\n");
                         //Enviamos los datos que llegan al resto datos al resto
                         sendToAll(comingText);
                     } else {
@@ -197,6 +235,7 @@ public class Servidor extends JFrame {
             }
         }
     }
+
     public static void main(String[] args) {
         new Servidor();
     }

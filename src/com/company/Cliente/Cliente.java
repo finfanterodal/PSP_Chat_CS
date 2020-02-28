@@ -1,8 +1,8 @@
 package com.company.Cliente;
 
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -26,11 +26,13 @@ public class Cliente extends JFrame {
 
 
     public Cliente(Socket s, String nickName) {
+
+
         //
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        //this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.add(mainPanel1);
-        this.setSize(400, 400);
+        this.setSize(600, 400);
         this.setVisible(true);
         this.nickName.setText(nickName);
         text1.append("Conectado a la sala de chat." + "\n");
@@ -44,11 +46,12 @@ public class Cliente extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    if (!textImput.getText().equals(".bye")) {
+                    if (!textImput.getText().equals("/bye")) {
                         dout.writeUTF(textImput.getText());
                     } else {
                         dout.writeUTF(textImput.getText());
@@ -62,6 +65,18 @@ public class Cliente extends JFrame {
             }
         });
 
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                System.out.println("ME VOY ADIOS");
+                try {
+                    dout.writeUTF("/bye");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                close();
+                System.exit(0);
+            }
+        });
 
     }
 
