@@ -51,19 +51,29 @@ public class Servidor extends JFrame {
                 }
                 Socket socket = serverSocket.accept();
                 String i = new DataInputStream((socket.getInputStream())).readUTF();
-                if (!(clientes.size() == 0)) {
-                    boolean aux = false;
-                    for (int j = 0; j < clientes.size(); j++) {
-                        if (clientes.get(j).nombre.equals(i)) {
-                            aux = true;
-                            break;
-                        } else {
-                            aux = false;
+                if (!(clientes.size() == 5)) {
+                    if (!(clientes.size() == 0)) {
+                        boolean aux = false;
+                        for (int j = 0; j < clientes.size(); j++) {
+                            if (clientes.get(j).nombre.equals(i)) {
+                                aux = true;
+                                break;
+                            } else {
+                                aux = false;
+                            }
                         }
-                    }
-                    if (aux) {
-                        DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                        dout.writeUTF("registrado");
+                        if (aux) {
+                            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+                            dout.writeUTF("registrado");
+                        } else {
+                            text1.append("Nuevo cliente conectado: " + i + "\n");
+                            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+                            dout.writeUTF("");
+                            ServidorHandle cliente = new ServidorHandle(i, socket);
+                            clientes.add(cliente);
+                            text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
+                            cliente.start();
+                        }
                     } else {
                         text1.append("Nuevo cliente conectado: " + i + "\n");
                         DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
@@ -74,13 +84,8 @@ public class Servidor extends JFrame {
                         cliente.start();
                     }
                 } else {
-                    text1.append("Nuevo cliente conectado: " + i + "\n");
                     DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                    dout.writeUTF("");
-                    ServidorHandle cliente = new ServidorHandle(i, socket);
-                    clientes.add(cliente);
-                    text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
-                    cliente.start();
+                    dout.writeUTF("Servidor lleno");
                 }
 
 
@@ -99,31 +104,31 @@ public class Servidor extends JFrame {
         Color color = Color.DARK_GRAY;
         switch (index) {
             case 0:
-                color=Color.GREEN;
+                color = Color.GREEN;
                 break;
             case 2:
-                color=Color.black;
+                color = Color.black;
                 break;
             case 3:
-                color=Color.BLUE;
+                color = Color.BLUE;
                 break;
             case 4:
-                color=Color.CYAN;
+                color = Color.CYAN;
                 break;
             case 5:
-                color=Color.magenta;
+                color = Color.magenta;
                 break;
             case 6:
-                color=Color.PINK;
+                color = Color.PINK;
                 break;
             case 7:
-                color=Color.ORANGE;
+                color = Color.ORANGE;
                 break;
             case 8:
-                color=Color.RED;
+                color = Color.RED;
                 break;
             case 9:
-                color=Color.GRAY;
+                color = Color.GRAY;
                 break;
         }
         return color;
@@ -164,7 +169,7 @@ public class Servidor extends JFrame {
                     if (!comingText.equals("/bye")) {
                         System.out.printf(comingText);
                         text1.append(nombre);
-                        text1.append(": "+comingText + "\n");
+                        text1.append(": " + comingText + "\n");
                         //Enviamos los datos que llegan al resto datos al resto
                         sendToAll(comingText);
                     } else {
