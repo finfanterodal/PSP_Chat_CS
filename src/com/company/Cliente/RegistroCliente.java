@@ -42,6 +42,8 @@ public class RegistroCliente extends JFrame {
                     String validacion = new DataInputStream(s.getInputStream()).readUTF();
                     if (validacion.equals("registrado")) {
                         JOptionPane.showMessageDialog(null, "Ya está registrado.");
+                    } else if (validacion.equals("Servidor lleno")) {
+                        JOptionPane.showMessageDialog(null, "Servidor lleno.");
                     } else {
                         setVisible(false);
                         new Cliente(s);
