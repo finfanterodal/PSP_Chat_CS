@@ -54,7 +54,7 @@
           <background color="-16777216"/>
           <enabled value="true"/>
           <font name="DialogInput" size="20" style="1"/>
-          <foreground color="-16777216"/>
+          <foreground color="-1"/>
           <labelFor value="9f7d8"/>
           <text value="Usuarios"/>
         </properties>
@@ -80,7 +80,7 @@
           <background color="-16777216"/>
           <enabled value="true"/>
           <font name="DialogInput" size="20" style="1"/>
-          <foreground color="-16777216"/>
+          <foreground color="-1"/>
           <labelFor value="9f7d8"/>
           <text value="Servidor Status:"/>
         </properties>

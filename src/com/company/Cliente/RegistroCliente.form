@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.company.Cliente.RegistroCliente">
-  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="10" left="10" bottom="10" right="10"/>
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="10" left="10" bottom="10" right="120"/>
     <constraints>
       <xy x="20" y="20" width="542" height="400"/>
     </constraints>
     <properties>
-      <background color="-11158602"/>
+      <background color="-14187077"/>
       <minimumSize width="400" height="300"/>
     </properties>
-    <border type="bevel-lowered"/>
+    <border type="bevel-lowered">
+      <font/>
+    </border>
     <children>
       <component id="7bcff" class="javax.swing.JTextField" binding="textNickname">
         <constraints>
@@ -26,16 +28,8 @@
         <properties>
           <background color="-16777216"/>
           <font name="DialogInput" size="24" style="1"/>
-          <foreground color="-16777216"/>
+          <foreground color="-1"/>
           <text value="Registro Chat Cliente"/>
-        </properties>
-      </component>
-      <component id="3f1a4" class="javax.swing.JButton" binding="connectButton" default-binding="true">
-        <constraints>
-          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Connect"/>
         </properties>
       </component>
       <component id="d8e73" class="javax.swing.JLabel">
@@ -44,7 +38,7 @@
         </constraints>
         <properties>
           <font name="DialogInput" size="20" style="1"/>
-          <foreground color="-16777216"/>
+          <foreground color="-1"/>
           <text value="Nickname:"/>
         </properties>
       </component>
@@ -62,7 +56,7 @@
         </constraints>
         <properties>
           <font name="DialogInput" size="20" style="1"/>
-          <foreground color="-16777216"/>
+          <foreground color="-1"/>
           <text value="Port:"/>
         </properties>
       </component>
@@ -72,7 +66,7 @@
         </constraints>
         <properties>
           <font name="DialogInput" size="20" style="1"/>
-          <foreground color="-16777216"/>
+          <foreground color="-1"/>
           <text value="IP:"/>
         </properties>
       </component>
@@ -83,6 +77,15 @@
           </grid>
         </constraints>
         <properties/>
+      </component>
+      <component id="3f1a4" class="javax.swing.JButton" binding="connectButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="DialogInput" size="20" style="1"/>
+          <text value="Connect"/>
+        </properties>
       </component>
     </children>
   </grid>

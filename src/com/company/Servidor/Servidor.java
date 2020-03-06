@@ -18,21 +18,22 @@ public class Servidor extends JFrame {
     private JPanel mainPanel;
     private JLabel statusText;
     //
-    ServerSocket serverSocket;
+    private ServerSocket serverSocket;
     static ArrayList<ServidorHandle> clientes = new ArrayList<ServidorHandle>();
 
 
     public Servidor() {
         //Configuracion panel
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setVisible(true);
+        this.setLocationRelativeTo(null);
         this.add(mainPanel);
         this.setSize(600, 400);
-        //
+        this.setVisible(true);
+
 
         try {
             serverSocket = new ServerSocket();
-            InetSocketAddress addr = new InetSocketAddress("192.168.0.15", Integer.parseInt(JOptionPane.showInputDialog("Puerto")));
+            InetSocketAddress addr = new InetSocketAddress("192.168.0.4 ", 5555);
             serverSocket.bind(addr);
             System.out.println("Servidor en iniciado:" + serverSocket);
             statusText.setText("Conected");
@@ -42,6 +43,7 @@ public class Servidor extends JFrame {
             e.printStackTrace();
         }
 
+
         while (true) {
             try {
                 if (clientes.isEmpty()) {
@@ -49,29 +51,19 @@ public class Servidor extends JFrame {
                 }
                 Socket socket = serverSocket.accept();
                 String i = new DataInputStream((socket.getInputStream())).readUTF();
-                if (!(clientes.size() == 3)) {
-                    if (!(clientes.size() == 0)) {
-                        boolean aux = false;
-                        for (int j = 0; j < clientes.size(); j++) {
-                            if (clientes.get(j).nombre.equals(i)) {
-                                aux = true;
-                                break;
-                            } else {
-                                aux = false;
-                            }
-                        }
-                        if (aux) {
-                            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                            dout.writeUTF("registrado");
+                if (!(clientes.size() == 0)) {
+                    boolean aux = false;
+                    for (int j = 0; j < clientes.size(); j++) {
+                        if (clientes.get(j).nombre.equals(i)) {
+                            aux = true;
+                            break;
                         } else {
-                            text1.append("Nuevo cliente conectado: " + i + "\n");
-                            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                            dout.writeUTF("");
-                            ServidorHandle cliente = new ServidorHandle(i, socket);
-                            clientes.add(cliente);
-                            text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
-                            cliente.start();
+                            aux = false;
                         }
+                    }
+                    if (aux) {
+                        DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+                        dout.writeUTF("registrado");
                     } else {
                         text1.append("Nuevo cliente conectado: " + i + "\n");
                         DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
@@ -82,18 +74,60 @@ public class Servidor extends JFrame {
                         cliente.start();
                     }
                 } else {
+                    text1.append("Nuevo cliente conectado: " + i + "\n");
                     DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                    dout.writeUTF("Servidor lleno");
+                    dout.writeUTF("");
+                    ServidorHandle cliente = new ServidorHandle(i, socket);
+                    clientes.add(cliente);
+                    text1.append("Actualmente hay " + clientes.size() + "  clientes conectados." + "\n");
+                    cliente.start();
                 }
 
 
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+
         }
+
 
     }
 
+
+    public Color selectColor() {
+        int index = 0;
+        Color color = Color.DARK_GRAY;
+        switch (index) {
+            case 0:
+                color=Color.GREEN;
+                break;
+            case 2:
+                color=Color.black;
+                break;
+            case 3:
+                color=Color.BLUE;
+                break;
+            case 4:
+                color=Color.CYAN;
+                break;
+            case 5:
+                color=Color.magenta;
+                break;
+            case 6:
+                color=Color.PINK;
+                break;
+            case 7:
+                color=Color.ORANGE;
+                break;
+            case 8:
+                color=Color.RED;
+                break;
+            case 9:
+                color=Color.GRAY;
+                break;
+        }
+        return color;
+    }
 
     //LOGICA DE CONTROL DE CADA UNO DE LOS CLIENTES QUE LLEGAN
     class ServidorHandle extends Thread {
@@ -127,9 +161,10 @@ public class Servidor extends JFrame {
                         }
                     }
                     String comingText = din.readUTF();
-                    if (!comingText.equals(".bye")) {
+                    if (!comingText.equals("/bye")) {
                         System.out.printf(comingText);
-                        text1.append(nombre + ": " + comingText + "\n");
+                        text1.append(nombre);
+                        text1.append(": "+comingText + "\n");
                         //Enviamos los datos que llegan al resto datos al resto
                         sendToAll(comingText);
                     } else {
@@ -170,7 +205,7 @@ public class Servidor extends JFrame {
                     dou.writeUTF(nombre + ": " + msg);
                     dou.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    removeCliente(clientes.get(i).nombre);
                 }
             }
         }
@@ -202,6 +237,7 @@ public class Servidor extends JFrame {
     }
 
     public static void main(String[] args) {
-        Servidor servidor = new Servidor();
+        new Servidor();
     }
+
 }

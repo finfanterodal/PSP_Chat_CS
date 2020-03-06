@@ -25,6 +25,7 @@ public class RegistroCliente extends JFrame {
         //
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(mainPanel);
+        this.setLocationRelativeTo(null);
         this.setSize(600, 400);
         this.setVisible(true);
 
@@ -46,7 +47,7 @@ public class RegistroCliente extends JFrame {
                         JOptionPane.showMessageDialog(null, "Servidor lleno.");
                     } else {
                         setVisible(false);
-                        new Cliente(s);
+                        new Cliente(s, nickName);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
