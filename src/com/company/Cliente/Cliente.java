@@ -33,6 +33,7 @@ public class Cliente extends JFrame {
         this.setSize(600, 400);
         this.setVisible(true);
         this.nickName.setText(nickName);
+        text1.setEditable(false);
         text1.append("Conectado a la sala de chat." + "\n");
         // SOCKET para comunicacion
         this.clienteSocket = s;

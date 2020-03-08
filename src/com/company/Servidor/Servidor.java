@@ -29,6 +29,7 @@ public class Servidor extends JFrame {
         this.add(mainPanel);
         this.setSize(600, 400);
         this.setVisible(true);
+        text1.setEditable(false);
 
 
         try {
