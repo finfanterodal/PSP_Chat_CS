@@ -38,11 +38,9 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="7fe30" class="javax.swing.JTextArea" binding="text2">
+          <component id="20d4f" class="javax.swing.JList" binding="listUsers">
             <constraints/>
-            <properties>
-              <text value=""/>
-            </properties>
+            <properties/>
           </component>
         </children>
       </scrollpane>

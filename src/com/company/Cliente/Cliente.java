@@ -1,6 +1,8 @@
 package com.company.Cliente;
 
 
+import com.company.Servidor.Servidor;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.DataInputStream;
@@ -8,14 +10,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-
 public class Cliente extends JFrame {
 
     private JTextField textImput;
     private JButton sendButton;
     private JTextArea text1;
-    private JButton seleccionarButton;
-    private JTextArea text2;
     private JPanel mainPanel1;
     private JLabel nickName;
     //
@@ -23,7 +22,6 @@ public class Cliente extends JFrame {
     private DataOutputStream dout;
     private DataInputStream din;
     private Socket clienteSocket;
-
 
     public Cliente(Socket s, String nickName) {
 
@@ -79,6 +77,7 @@ public class Cliente extends JFrame {
         });
 
     }
+
 
     public void close() {
         try {

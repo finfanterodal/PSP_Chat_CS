@@ -14,12 +14,12 @@ import java.util.ArrayList;
 public class Servidor extends JFrame {
     //
     private JTextArea text1;
-    private JTextArea text2;
     private JPanel mainPanel;
     private JLabel statusText;
+    private JList listUsers;
     //
     private ServerSocket serverSocket;
-    static ArrayList<ServidorHandle> clientes = new ArrayList<ServidorHandle>();
+    public static ArrayList<ServidorHandle> clientes = new ArrayList<ServidorHandle>();
 
 
     public Servidor() {
@@ -33,7 +33,7 @@ public class Servidor extends JFrame {
 
         try {
             serverSocket = new ServerSocket();
-            InetSocketAddress addr = new InetSocketAddress("192.168.0.4 ", 5555);
+            InetSocketAddress addr = new InetSocketAddress("192.168.0.15", Integer.parseInt(JOptionPane.showInputDialog("Puerto Servidor:")));
             serverSocket.bind(addr);
             System.out.println("Servidor en iniciado:" + serverSocket);
             statusText.setText("Conected");
@@ -46,12 +46,13 @@ public class Servidor extends JFrame {
 
         while (true) {
             try {
+                listaUsers();
                 if (clientes.isEmpty()) {
                     text1.append("No hay clientes conectados todavía." + "\n");
                 }
                 Socket socket = serverSocket.accept();
                 String i = new DataInputStream((socket.getInputStream())).readUTF();
-                if (!(clientes.size() == 5)) {
+                if ((clientes.size() <= 5)) {
                     if (!(clientes.size() == 0)) {
                         boolean aux = false;
                         for (int j = 0; j < clientes.size(); j++) {
@@ -98,41 +99,20 @@ public class Servidor extends JFrame {
 
     }
 
+    public void listaUsers() {
 
-    public Color selectColor() {
-        int index = 0;
-        Color color = Color.DARK_GRAY;
-        switch (index) {
-            case 0:
-                color = Color.GREEN;
-                break;
-            case 2:
-                color = Color.black;
-                break;
-            case 3:
-                color = Color.BLUE;
-                break;
-            case 4:
-                color = Color.CYAN;
-                break;
-            case 5:
-                color = Color.magenta;
-                break;
-            case 6:
-                color = Color.PINK;
-                break;
-            case 7:
-                color = Color.ORANGE;
-                break;
-            case 8:
-                color = Color.RED;
-                break;
-            case 9:
-                color = Color.GRAY;
-                break;
+        //Crear un objeto DefaultListModel
+        DefaultListModel listModel = new DefaultListModel();
+        listModel.clear();
+        //Recorrer el contenido del ArrayList
+        for (int i = 0; i < clientes.size(); i++) {
+            //Añadir cada elemento del ArrayList en el modelo de la lista
+            listModel.add(i, clientes.get(i).nombre);
         }
-        return color;
+        //Asociar el modelo de lista al JList
+        listUsers.setModel(listModel);
     }
+
 
     //LOGICA DE CONTROL DE CADA UNO DE LOS CLIENTES QUE LLEGAN
     class ServidorHandle extends Thread {
@@ -170,7 +150,7 @@ public class Servidor extends JFrame {
                         System.out.printf(comingText);
                         text1.append(nombre);
                         text1.append(": " + comingText + "\n");
-                        //Enviamos los datos que llegan al resto datos al resto
+                        //Enviamos los datos que llegan al resto
                         sendToAll(comingText);
                     } else {
                         aux = true;
@@ -187,13 +167,14 @@ public class Servidor extends JFrame {
 
         private void closeConnection() {
             try {
-                String comingText = nombre + ": se ha desconectado." + "\n";
-                text1.append(comingText);
+                String comingText = ": se ha desconectado." + "\n";
+                text1.append(nombre + comingText);
                 sendToAll(comingText);
                 removeCliente(nombre);
                 if (clientes.isEmpty()) {
                     text1.append("No hay clientes conectados todavía." + "\n");
                 }
+                listaUsers();
                 din.close();
                 dout.close();
                 socket.close();
@@ -201,7 +182,6 @@ public class Servidor extends JFrame {
                 ex.printStackTrace();
             }
         }
-
 
         public void sendToAll(String msg) {
             for (int i = 0; i < clientes.size(); i++) {
